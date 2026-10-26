@@ -347,6 +347,62 @@ function initEventListeners() {
       }
     });
   }
+
+  // Secret Admin Portal Trigger (3 clicks on মশলাদার)
+  initSecretAdminTrigger();
+}
+
+// Secret Admin Triple Click Trigger Handler
+function initSecretAdminTrigger() {
+  const triggerEl = document.getElementById('admin-secret-trigger');
+  const footerWrap = document.getElementById('footer-copyright-trigger');
+  let clickCount = 0;
+  let clickTimer = null;
+
+  function triggerAdminRedirect() {
+    clickCount = 0;
+    clearTimeout(clickTimer);
+    showToast('🔒 অ্যাডমিন পোর্টাল ওপেন হচ্ছে...');
+    setTimeout(() => {
+      window.location.href = '/admin';
+    }, 280);
+  }
+
+  function handleAdminClick(e) {
+    clickCount++;
+    clearTimeout(clickTimer);
+
+    if (clickCount >= 3) {
+      triggerAdminRedirect();
+      return;
+    }
+
+    // Reset count if user doesn't complete 3 clicks within 1.5 seconds
+    clickTimer = setTimeout(() => {
+      clickCount = 0;
+    }, 1500);
+  }
+
+  if (triggerEl) {
+    triggerEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleAdminClick(e);
+    });
+  }
+
+  if (footerWrap) {
+    footerWrap.addEventListener('click', (e) => {
+      handleAdminClick(e);
+    });
+  }
+
+  // Keyboard shortcut: Ctrl+Shift+A or Cmd+Shift+A
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+      e.preventDefault();
+      triggerAdminRedirect();
+    }
+  });
 }
 
 // Fetch Products from API

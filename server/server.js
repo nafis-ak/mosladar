@@ -56,6 +56,11 @@ app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, '..', 'public', 'assets')));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Admin portal page route
+app.get(['/admin', '/admin.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'admin.html'));
+});
+
 // ----------------------------------------------------
 // Public Store API Endpoints
 // ----------------------------------------------------

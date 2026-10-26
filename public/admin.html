@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>মশলাদার (Mosladar) — অ্যাডমিন পোর্টাল ও ড্যাশবোর্ড</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/jpeg" href="/assets/branding/mosladar-logo.jpg">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/style.css">
+
+  <style>
+    /* ==========================================================================
+       MOSLADAR ADMIN PORTAL SPECIFIC STYLES
+       ========================================================================== */
+    body {
+      background-color: #F6F4EE;
+      color: var(--c-text-primary);
+      font-family: var(--font-bn);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ----------------------------------------------------
+       1. Login View
+       ---------------------------------------------------- */
+    #admin-login-view {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #12281A 0%, #1E432B 50%, #2A5638 100%);
+      position: relative;
+    }
+
+    .login-container-card {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 40px 32px;
+      backdrop-filter: blur(12px);
+      text-align: center;
+      position: relative;
+      animation: fadeInLogin 0.5s ease-out;
+    }
+
+    @keyframes fadeInLogin {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 16px;
+      border: 3px solid var(--c-gold);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      background: #FAF6EE;
+    }
+
+    .login-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--c-forest-dark);
+      margin: 0 0 6px;
+      font-family: var(--font-bn);
+    }
+
+    .login-badge {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--c-maroon-soft);
+      color: var(--c-maroon);
+      margin-bottom: 24px;
+    }
+
+    .login-form-group {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    .login-form-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--c-forest-dark);
+      margin-bottom: 6px;
+    }
+
+    .login-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      transition: all var(--transition-fast);
+      font-family: var(--font-sans);
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: var(--c-forest-green);
+      box-shadow: 0 0 0 3px rgba(35, 76, 50, 0.15);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--c-forest-green);
+      color: var(--c-white);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      box-shadow: 0 4px 14px rgba(35, 76, 50, 0.25);
+      margin-top: 10px;
+    }
+
+    .login-btn:hover {
+      background: var(--c-forest-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(35, 76, 50, 0.35);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .login-footer-hint {
+      margin-top: 24px;
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      border-top: 1px dashed var(--c-border);
+      padding-top: 16px;
+    }
+
+    .login-footer-hint a {
+      color: var(--c-forest-green);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    /* ----------------------------------------------------
+       2. Dashboard Layout
+       ---------------------------------------------------- */
+    #admin-app-view {
+      display: none;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #F8F6F0;
+    }
+
+    /* Navbar */
+    .admin-navbar {
+      background: var(--c-forest-dark);
+      color: var(--c-white);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--c-white);
+    }
+
+    .admin-brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--c-gold);
+      background: #FAF6EE;
+      object-fit: cover;
+    }
+
+    .admin-brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .admin-brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--c-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }
+
+    .admin-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .admin-user-pill {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #E2E8F0;
+    }
+
+    .admin-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--c-white);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .admin-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: var(--c-gold);
+      color: var(--c-gold);
+    }
+
+    .admin-btn-logout {
+      background: var(--c-maroon);
+      border-color: var(--c-maroon);
+      color: var(--c-white);
+    }
+
+    .admin-btn-logout:hover {
+      background: var(--c-maroon-dark);
+      color: var(--c-white);
+    }
+
+    /* Sub-header / Tab Bar */
+    .admin-subbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--c-border);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-page-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--c-forest-dark);
+      margin: 0;
+    }
+
+    .admin-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F1ECE2;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+    }
+
+    .admin-nav-item {
+      background: transparent;
+      border: none;
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--c-text-secondary);
+      transition: all var(--transition-fast);
+      font-family: var(--font-bn);
+    }
+
+    .admin-nav-item:hover {
+      color: var(--c-forest-dark);
+    }
+
+    .admin-nav-item.active {
+      background: var(--c-forest-green);
+      color: var(--c-white);
+      box-shadow: 0 2px 8px rgba(35, 76, 50, 0.25);
+    }
+
+    /* Main Container */
+    .admin-main-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 28px 60px;
+      box-sizing: border-box;
+      flex: 1;
+    }
+
+    /* ----------------------------------------------------
+       3. Stats Summary Cards
+       ---------------------------------------------------- */
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.orders { background: #E9F0EC; color: var(--c-forest-green); }
+    .stat-icon.pending { background: #FEF3C7; color: #B45309; }
+    .stat-icon.revenue { background: #FDE8E8; color: var(--c-maroon); }
+    .stat-icon.stock { background: #FEE2E2; color: #DC2626; }
+
+    .stat-meta {
+      flex: 1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--c-text-muted);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--c-text-primary);
+      line-height: 1.1;
+      font-family: var(--font-sans);
+    }
+
+    /* ----------------------------------------------------
+       4. Orders Table & Filters
+       ---------------------------------------------------- */
+    .table-container-card {
+      background: #FFFFFF;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--c-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: #FAF8F5;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .toolbar-search {
+      flex: 1;
+      max-width: 380px;
+      padding: 9px 14px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-family: var(--font-bn);
+      background: #FFFFFF;
+    }
+
+    .toolbar-search:focus {
+      outline: none;
+      border-color: var(--c-forest-green);
+    }
+
+    .toolbar-select {
+      padding: 9px 14px;
+      border: 1px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      background: #FFFFFF;
+      font-family: var(--font-bn);
+      cursor: pointer;
+    }
+
+    .toolbar-select:focus {
+      outline: none;
+      border-color: var(--c-forest-green);
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th {
+      background: #FAF8F5;
+      color: var(--c-forest-dark);
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--c-border);
+      white-space: nowrap;
+      font-size: 0.85rem;
+    }
+
+    .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--c-border-light);
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover td {
+      background: #FAF6EE;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+
+    .status-badge.status-pending { background: #FEF3C7; color: #B45309; }
+    .status-badge.status-confirmed { background: #DBEAFE; color: #1E40AF; }
+    .status-badge.status-processing { background: #E0E7FF; color: #4338CA; }
+    .status-badge.status-shipped { background: #EDE9FE; color: #6D28D9; }
+    .status-badge.status-delivered { background: #D1FAE5; color: #065F46; }
+    .status-badge.status-cancelled { background: #FEE2E2; color: #991B1B; }
+
+    /* ----------------------------------------------------
+       5. Modal Overlay & Actions
+       ---------------------------------------------------- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 40, 26, 0.7);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalPop 0.3s ease-out;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 16px 24px;
+      background: var(--c-forest-dark);
+      color: var(--c-white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--c-white);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color var(--transition-fast);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--c-gold);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      max-height: calc(90vh - 70px);
+    }
+
+    .form-select, .form-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1.5px solid var(--c-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-bn);
+      font-size: 0.92rem;
+    }
+
+    .form-select:focus, .form-input:focus {
+      outline: none;
+      border-color: var(--c-forest-green);
+    }
+
+    @media (max-width: 768px) {
+      .admin-navbar {
+        padding: 12px 16px;
+      }
+      .admin-subbar {
+        padding: 12px 16px;
+      }
+      .admin-main-container {
+        padding: 16px 16px 40px;
+      }
+      .toolbar-left {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================
+       1. ADMIN LOGIN VIEW
+       ==================================================== -->
+  <div id="admin-login-view">
+    <div class="login-container-card">
+      <img src="/assets/branding/mosladar-logo.jpg" alt="Mosladar Logo" class="login-logo" onerror="this.src='/logo.jpg'">
+      <h1 class="login-title">মশলাদার অ্যাডমিন</h1>
+      <span class="login-badge">🔒 Secure Admin Portal</span>
+
+      <form id="admin-login-form">
+        <div class="login-form-group">
+          <label for="login-username">অ্যাডমিন ইউজারনেম (Username)</label>
+          <input 
+            type="text" 
+            id="login-username" 
+            class="login-input" 
+            placeholder="e.g. admin" 
+            required 
+            autocomplete="username"
+            value="admin"
+          >
+        </div>
+
+        <div class="login-form-group">
+          <label for="login-password">পাসওয়ার্ড (Password)</label>
+          <input 
+            type="password" 
+            id="login-password" 
+            class="login-input" 
+            placeholder="আপনার পাসওয়ার্ড লিখুন" 
+            required 
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="login-btn">
+          লগইন করুন (Secure Login)
+        </button>
+      </form>
+
+      <div class="login-footer-hint">
+        <p style="margin: 0 0 6px;">
+          ডিফল্ট ইউজারনেম: <code>admin</code> | পাসওয়ার্ড: <code>Mosladar@Admin2026!</code>
+        </p>
+        <a href="/">← মূল ওয়েবসাইটে ফিরে যান (Back to Store)</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       2. ADMIN DASHBOARD & APP VIEW
+       ==================================================== -->
+  <div id="admin-app-view">
+    
+    <!-- Top Navigation Bar -->
+    <header class="admin-navbar">
+      <a href="/admin.html" class="admin-brand">
+        <img src="/assets/branding/mosladar-logo.jpg" alt="Mosladar Logo" onerror="this.src='/logo.jpg'">
+        <div class="admin-brand-text">
+          <span class="admin-brand-title">মশলাদার (Mosladar)</span>
+          <span class="admin-brand-subtitle">Management Console</span>
+        </div>
+      </a>
+
+      <div class="admin-nav-actions">
+        <span id="admin-user-display" class="admin-user-pill">
+          Logged in: admin (superadmin)
+        </span>
+
+        <button type="button" class="admin-btn-secondary" onclick="exportDatabaseBackup()" title="Download full JSON database snapshot">
+          💾 ডাটাবেজ ব্যাকআপ (JSON)
+        </button>
+
+        <a href="/" target="_blank" rel="noopener noreferrer" class="admin-btn-secondary" title="View live storefront">
+          🏪 লাইভ শপ দেখুন
+        </a>
+
+        <button type="button" class="admin-btn-secondary admin-btn-logout" onclick="handleAdminLogout()" title="Log out from session">
+          🚪 লগআউট
+        </button>
+      </div>
+    </header>
+
+    <!-- Sub-header & Navigation Tabs -->
+    <div class="admin-subbar">
+      <h1 id="admin-page-title" class="admin-page-title">
+        অর্ডার ব্যবস্থাপনা (Orders)
+      </h1>
+
+      <div class="admin-tabs">
+        <button 
+          type="button" 
+          class="admin-nav-item active" 
+          data-tab="orders" 
+          onclick="switchAdminTab('orders')"
+        >
+          📦 অর্ডারসমূহ (Orders)
+        </button>
+        <button 
+          type="button" 
+          class="admin-nav-item" 
+          data-tab="inventory" 
+          onclick="switchAdminTab('inventory')"
+        >
+          🏷️ স্টক ও মূল্য ব্যবস্থাপনা (Inventory)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="admin-main-container">
+
+      <!-- Stats Overview Cards -->
+      <section class="admin-stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orders">📦</div>
+          <div class="stat-meta">
+            <div class="stat-label">সর্বমোট অর্ডার</div>
+            <div id="stat-total-orders" class="stat-value">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon pending">⏳</div>
+          <div class="stat-meta">
+            <div class="stat-label">অপেক্ষমান অর্ডার</div>
+            <div id="stat-pending-orders" class="stat-value">0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon revenue">৳</div>
+          <div class="stat-meta">
+            <div class="stat-label">মোট বিক্রয় রেভিনিউ</div>
+            <div id="stat-revenue" class="stat-value">৳0</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon stock">⚠️</div>
+          <div class="stat-meta">
+            <div class="stat-label">কম স্টক অ্যালার্ট</div>
+            <div id="stat-low-stock" class="stat-value">0</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 1: Orders Tab Content -->
+      <section id="tab-content-orders">
+        <div class="table-container-card">
+          
+          <!-- Orders Filter Toolbar -->
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <input 
+                type="text" 
+                id="order-search-input" 
+                class="toolbar-search" 
+                placeholder="অর্ডার কোড, ক্রেতার নাম বা ফোন নম্বর খুঁজুন..."
+                oninput="loadAdminOrders()"
+              >
+              
+              <select id="order-filter-status" class="toolbar-select" onchange="loadAdminOrders()">
+                <option value="all">সব অর্ডার (All Statuses)</option>
+                <option value="pending">Pending (অপেক্ষমান)</option>
+                <option value="confirmed">Confirmed (নিশ্চিত)</option>
+                <option value="processing">Processing (প্রস্তুত হচ্ছে)</option>
+                <option value="shipped">Shipped (কুরিয়ারে)</option>
+                <option value="delivered">Delivered (বিতরণকৃত)</option>
+                <option value="cancelled">Cancelled (বাতিল)</option>
+              </select>
+            </div>
+
+            <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadAdminOrders(); loadAdminStats();">
+              🔄 রিফ্রেশ করুন
+            </button>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>অর্ডার কোড</th>
+                  <th>তারিখ ও সময়</th>
+                  <th>গ্রাহকের তথ্য</th>
+                  <th>ডেলিভারি এলাকা</th>
+                  <th>আইটেম</th>
+                  <th>মোট বিল</th>
+                  <th>পেমেন্ট</th>
+                  <th>স্ট্যাটাস</th>
+                  <th>অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody">
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: 28px; color: var(--c-text-muted);">
+                    অর্ডার লোড হচ্ছে...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: Inventory Tab Content -->
+      <section id="tab-content-inventory" style="display: none;">
+        <div class="table-container-card">
+          <div class="table-toolbar">
+            <div style="font-weight: 700; font-size: 1rem; color: var(--c-forest-dark);">
+              মসলার স্টক ও বিক্রয়মূল্য পরিচালনা
+            </div>
+            <button type="button" class="btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadAdminProducts()">
+              🔄 স্টক রিফ্রেশ করুন
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>পণ্যের নাম</th>
+                  <th>ক্যাটাগরি</th>
+                  <th>প্যাকেটের ওজন</th>
+                  <th>SKU কোড</th>
+                  <th>মূল্য (৳)</th>
+                  <th>স্টক (সংখ্যা)</th>
+                  <th>অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inventory-tbody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 28px; color: var(--c-text-muted);">
+                    পণ্য তালিকা লোড হচ্ছে...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ====================================================
+       3. ORDER DETAILS & STATUS UPDATE MODAL
+       ==================================================== -->
+  <div id="admin-order-modal" class="modal-overlay" onclick="if(event.target === this) closeAdminOrderModal()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="admin-modal-order-code" class="modal-title">অর্ডারের বিবরণ</h3>
+        <button type="button" class="modal-close-btn" onclick="closeAdminOrderModal()" title="Close Modal">&times;</button>
+      </div>
+      <div id="admin-modal-order-body" class="modal-body">
+        <!-- Injected dynamically by admin.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================
+       4. TOAST NOTIFICATIONS CONTAINER
+       ==================================================== -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Admin Controller JS -->
+  <script src="/admin.js"></script>
+
+</body>
+</html>

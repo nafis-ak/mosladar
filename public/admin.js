@@ -89,6 +89,7 @@ async function handleAdminLogout() {
     console.error('Logout error:', err);
   }
 }
+window.handleAdminLogout = handleAdminLogout;
 
 // Tab Switcher
 window.switchAdminTab = function(tabName) {
@@ -131,9 +132,12 @@ async function loadAdminStats() {
 
 // Load Orders List
 async function loadAdminOrders() {
-  const status = document.getElementById('order-filter-status').value;
-  const search = document.getElementById('order-search-input').value;
+  const statusEl = document.getElementById('order-filter-status');
+  const searchEl = document.getElementById('order-search-input');
+  const status = statusEl ? statusEl.value : '';
+  const search = searchEl ? searchEl.value : '';
   const tbody = document.getElementById('admin-orders-tbody');
+  if (!tbody) return;
 
   tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 24px;">লোড হচ্ছে...</td></tr>';
 
@@ -189,6 +193,7 @@ async function loadAdminOrders() {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--c-danger);">অর্ডার লোড করতে সমস্যা হয়েছে।</td></tr>';
   }
 }
+window.loadAdminOrders = loadAdminOrders;
 
 // View Order Details & Action Modal
 window.viewAdminOrderDetails = function(orderId) {
@@ -353,6 +358,7 @@ async function loadAdminProducts() {
     console.error('Inventory load error:', err);
   }
 }
+window.loadAdminProducts = loadAdminProducts;
 
 // Save Variant Price and Stock
 window.saveVariantChanges = async function(variantId) {
